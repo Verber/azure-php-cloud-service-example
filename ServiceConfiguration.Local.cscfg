@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ServiceConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" serviceName="ExampleProject" osFamily="2" osVersion="*" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration">
+  <Role name="WebRole1">
+    <ConfigurationSettings />
+    <Instances count="1" />
+    <Certificates />
+  </Role>
+  <Role name="WorkerRole1">
+    <ConfigurationSettings />
+    <Instances count="1" />
+    <Certificates />
+  </Role>
+</ServiceConfiguration>
