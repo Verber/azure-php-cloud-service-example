@@ -64,13 +64,13 @@ class Queues {
             $this->tableProxy->createTable("config");
             $entity = new Entity();
             $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey(uniqid('timeout'));
+            $entity->setRowKey('timeout');
             $entity->addProperty("value", EdmType::INT32, 10);
             $this->tableProxy->insertEntity("config", $entity);
 
             $entity = new Entity();
             $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey(uniqid('count'));
+            $entity->setRowKey('count');
             $entity->addProperty("value", EdmType::INT32, 1);
             $this->tableProxy->insertEntity("config", $entity);
         }
@@ -106,49 +106,15 @@ class Queues {
 
         $entity = new Entity();
         $entity->setPartitionKey("workerConfig");
-        $entity->setRowKey(uniqid('timeout'));
+        $entity->setRowKey('timeout');
         $entity->addProperty("value", EdmType::INT32, $timeout);
         $this->tableProxy->insertEntity("config", $entity);
 
         $entity = new Entity();
         $entity->setPartitionKey("workerConfig");
-        $entity->setRowKey(uniqid('count'));
+        $entity->setRowKey('count');
         $entity->addProperty("value", EdmType::INT32, $number);
         $this->tableProxy->insertEntity("config", $entity);
-    }
-
-    public function dequeue(Request $request, Application $app)
-    {
-        $number = $request->get('number')?:1;
-        $timeout = $request->get('timeout')?:30;
-        $action = $request->get('action')?:'Release';
-
-
-        $options = new ListMessagesOptions();
-        $options->setNumberOfMessages($number);
-        $options->setVisibilityTimeoutInSeconds($timeout);
-
-        $listMessagesResult = $this->queueProxy->listMessages('test-queue', $options);
-        $locked_messages = $listMessagesResult->getQueueMessages();
-        $view = new View();
-        $view['locked_messages'] = $listMessagesResult->getQueueMessages();
-        $view['timeout'] = $timeout;
-        if ('Delete' == $action) {
-            foreach ($locked_messages as $message) {
-                $messageId = $message->getMessageId();
-                $popReceipt = $message->getPopReceipt();
-                $this->queueProxy->deleteMessage('test-queue', $messageId, $popReceipt);
-            }
-        }
-
-        $options = new PeekMessagesOptions();
-        $options->setNumberOfMessages(5);
-        $peekMessageResult = $this->queueProxy->peekMessages('test-queue', $options);
-        $view['messages'] = $peekMessageResult->getQueueMessages();
-
-        return $view->render('Queues/index.php');
-
-
     }
 
 }

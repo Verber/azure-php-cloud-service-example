@@ -56,13 +56,13 @@ class Worker {
             $this->tableProxy->createTable("config");
             $entity = new Entity();
             $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey(uniqid('timeout'));
+            $entity->setRowKey('timeout');
             $entity->addProperty("value", EdmType::INT32, 10);
             $this->tableProxy->insertEntity("config", $entity);
 
             $entity = new Entity();
             $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey(uniqid('count'));
+            $entity->setRowKey('count');
             $entity->addProperty("value", EdmType::INT32, 1);
             $this->tableProxy->insertEntity("config", $entity);
         }
