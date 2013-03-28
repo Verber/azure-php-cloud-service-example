@@ -59,7 +59,7 @@ class Queues {
 
     private function initTable()
     {
-        $existingTables = $this->tableProxy->queryTables('config');
+        $existingTables = $this->tableProxy->queryTables('config')->getTables();
         if (count($existingTables) == 0) {
             $this->tableProxy->createTable("config");
             $entity = new Entity();

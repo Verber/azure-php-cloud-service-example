@@ -27,8 +27,8 @@ class Worker {
     public function __construct()
     {
         $connectionString = 'DefaultEndpointsProtocol=http;'
-                    . 'AccountName=exampleproject;'
-                    . 'AccountKey=we3GAzMMS0w2fXn0MI42OlGai5oaBoJYRm8MWPEE2yao0rzyCEucrhwDaRnlEtGxKPgEkkIgmwmZtYxkcnN4Xw==';
+                           . 'AccountName=exampleproject;'
+                           . 'AccountKey=we3GAzMMS0w2fXn0MI42OlGai5oaBoJYRm8MWPEE2yao0rzyCEucrhwDaRnlEtGxKPgEkkIgmwmZtYxkcnN4Xw==';
         $this->queueProxy = ServicesBuilder::getInstance()->createQueueService($connectionString);
 
         $this->initQueue();
@@ -51,7 +51,7 @@ class Worker {
 
     private function initTable()
     {
-        $existingTables = $this->tableProxy->queryTables('config');
+        $existingTables = $this->tableProxy->queryTables('config')->getTables();
         if (count($existingTables) == 0) {
             $this->tableProxy->createTable("config");
             $entity = new Entity();
