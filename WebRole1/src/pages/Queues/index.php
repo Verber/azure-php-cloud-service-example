@@ -51,35 +51,11 @@
 <?php else: ?>
     <p>There are no messages in queue</p>
 <?php endif; ?>
-<h2>Dequeue messages</h2>
-<form method="post" action="/index.php/queues/list" enctype="multipart/form-data" >
+<h2>Worker configuration</h2>
+<form method="post" action="/index.php/queues/manage" enctype="multipart/form-data" >
     Dequeue <input type="text" name="number" id="number"/>
     messages on <input type="text" name="timeout" id="timeout"/> seconds
-    and
-    <select name="action" id="action">
-        <option value="Release" selected="selected">Release</option>
-        <option value="Delete">Delete</option>
-    </select>
-    <input type="submit" name="go" value="Go!" />
+    <input type="submit" name="configure" value="Set" />
 </form>
-<h3>Locked messages list</h3>
-<?php if (isset($locked_messages) && count($locked_messages)): ?>
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Message</th>
-        <th>Date</th>
-    </tr>
-    <?php foreach ($locked_messages as $locked_message): ?>
-    <tr>
-        <td><?php echo $locked_message->getMessageId(); ?></td>
-        <td><?php echo $locked_message->getMessageText(); ?></td>
-        <td><?php echo $locked_message->getInsertionDate()->format('r'); ?></td>
-    </tr>
-    <?php endforeach; ?>
-</table>
-<?php else: ?>
-    <p>There are no locked messages</p>
-<?php endif; ?>
 </body>
 </html>

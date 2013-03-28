@@ -18,10 +18,7 @@
 <body>
 <h1>Azure Demos</h1>
 <ul>
-    <li><a href="/index.php/mysql">Mysql Demo: Registration</a></li>
-    <li><a href="/index.php/tables">Tables Demo: TODOs</a></li>
-    <li><a href="/index.php/blobs">Blob Demo: Gallery</a></li>
-    <li><a href="/index.php/queues">Storage Queue Demo</a></li>
+    <li><a href="/index.php/queues">Storage Queue Demo for worker</a></li>
 </ul>
 <div><sub>Powered by<a href="http://silex.sensiolabs.org/">Silex</a>&nbsp;<a href="/index.php/info">PHP Info</a></sub></div>
 </body>

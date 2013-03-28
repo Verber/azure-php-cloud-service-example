@@ -17,6 +17,8 @@ use WindowsAzure\Queue\Models\CreateQueueOptions;
 use WindowsAzure\Queue\Models\ListMessagesOptions;
 use WindowsAzure\Queue\Models\ListQueuesOptions;
 use WindowsAzure\Queue\Models\PeekMessagesOptions;
+use WindowsAzure\Table\Models\EdmType;
+use WindowsAzure\Table\Models\Entity;
 
 class Queues {
 
@@ -25,14 +27,23 @@ class Queues {
      */
     private $queueProxy;
 
+    /**
+     * @var \WindowsAzure\Table\TableRestProxy tableProxy
+     */
+    private $tableProxy;
+
     public function __construct()
     {
         $connectionString = 'DefaultEndpointsProtocol=http;'
-                    . 'AccountName=phpaz1storage;'
-                    . 'AccountKey=nSsL1qPY62PDpeRV2qEAokllKpBRdz8OTkoGt424howtFg/1MdG3slxmsvPwBCOvMcTSu9B/baX6Izy8cikV2A==';
+                    . 'AccountName=exampleproject;'
+                    . 'AccountKey=we3GAzMMS0w2fXn0MI42OlGai5oaBoJYRm8MWPEE2yao0rzyCEucrhwDaRnlEtGxKPgEkkIgmwmZtYxkcnN4Xw==';
         $this->queueProxy = ServicesBuilder::getInstance()->createQueueService($connectionString);
 
         $this->init();
+
+        $this->tableProxy = ServicesBuilder::getInstance()->createTableService($connectionString);
+
+        $this->initTable();
     }
 
     private function init()
@@ -46,6 +57,25 @@ class Queues {
 
     }
 
+    private function initTable()
+    {
+        $existingTables = $this->tableProxy->queryTables('config');
+        if (count($existingTables) == 0) {
+            $this->tableProxy->createTable("config");
+            $entity = new Entity();
+            $entity->setPartitionKey("workerConfig");
+            $entity->setRowKey(uniqid('timeout'));
+            $entity->addProperty("value", EdmType::INT32, 10);
+            $this->tableProxy->insertEntity("config", $entity);
+
+            $entity = new Entity();
+            $entity->setPartitionKey("workerConfig");
+            $entity->setRowKey(uniqid('count'));
+            $entity->addProperty("value", EdmType::INT32, 1);
+            $this->tableProxy->insertEntity("config", $entity);
+        }
+    }
+
     public function index(Request $request, Application $app)
     {
         $options = new PeekMessagesOptions();
@@ -54,6 +84,9 @@ class Queues {
 
         $view = new View();
         $view['messages'] = $peekMessageResult->getQueueMessages();
+        $view['timeout'] = $this->tableProxy
+            ->getEntity("config", 'workerConfig', 'timeout')
+            ->getEntity()->getPropertyValue('value');
 
         return $view->render('Queues/index.php');
 
@@ -64,6 +97,24 @@ class Queues {
         $messageText = $request->get('message');
         $this->queueProxy->createMessage('test-queue', $messageText);
         return $app->redirect('/index.php/queues');
+    }
+
+    public function manage(Request $request, Application $app)
+    {
+        $number = $request->get('number')?:1;
+        $timeout = $request->get('timeout')?:30;
+
+        $entity = new Entity();
+        $entity->setPartitionKey("workerConfig");
+        $entity->setRowKey(uniqid('timeout'));
+        $entity->addProperty("value", EdmType::INT32, $timeout);
+        $this->tableProxy->insertEntity("config", $entity);
+
+        $entity = new Entity();
+        $entity->setPartitionKey("workerConfig");
+        $entity->setRowKey(uniqid('count'));
+        $entity->addProperty("value", EdmType::INT32, $number);
+        $this->tableProxy->insertEntity("config", $entity);
     }
 
     public function dequeue(Request $request, Application $app)
