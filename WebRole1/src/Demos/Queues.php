@@ -139,6 +139,8 @@ class Queues {
         $entity->setRowKey('count');
         $entity->addProperty("value", EdmType::INT32, $number);
         $this->tableProxy->insertOrReplaceEntity("config", $entity);
+
+        return $app->redirect('/index.php/queues');
     }
 
 }
