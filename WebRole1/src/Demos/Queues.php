@@ -125,8 +125,8 @@ class Queues {
 
     public function manage(Request $request, Application $app)
     {
-        $number = $request->get('number')?:1;
-        $timeout = $request->get('timeout')?:30;
+        $number = (int) $request->get('number')?:1;
+        $timeout = (int) $request->get('timeout')?:30;
 
         $entity = new Entity();
         $entity->setPartitionKey("workerConfig");
