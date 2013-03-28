@@ -1,0 +1,16 @@
+{
+    "require": {
+        "microsoft/windowsazure": "*",
+        "silex/silex": "1.0.*@dev"
+    },
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "http://pear.php.net"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-0": {"Demos": "src/"}
+    }
+}
