@@ -132,13 +132,13 @@ class Queues {
         $entity->setPartitionKey("workerConfig");
         $entity->setRowKey('timeout');
         $entity->addProperty("value", EdmType::INT32, $timeout);
-        $this->tableProxy->insertEntity("config", $entity);
+        $this->tableProxy->insertOrReplaceEntity("config", $entity);
 
         $entity = new Entity();
         $entity->setPartitionKey("workerConfig");
         $entity->setRowKey('count');
         $entity->addProperty("value", EdmType::INT32, $number);
-        $this->tableProxy->insertEntity("config", $entity);
+        $this->tableProxy->insertOrReplaceEntity("config", $entity);
     }
 
 }
