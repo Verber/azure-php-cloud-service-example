@@ -10,7 +10,7 @@
           </Variable>
           <Variable name="RUNTIMEVERSIONPRIMARYKEY" value="5.3.17" />
           <Variable name="RUNTIMEID" value="PHP" />
-          <Variable name="RUNTIMEURL" value="" />
+          <Variable name="RUNTIMEURL" value="http://az413943.vo.msecnd.net/php/5.3.17.exe" />
         </Environment>
       </Task>
     </Startup>
@@ -34,7 +34,7 @@
           </Variable>
           <Variable name="RUNTIMEVERSIONPRIMARYKEY" value="5.3.17" />
           <Variable name="RUNTIMEID" value="PHP" />
-          <Variable name="RUNTIMEURL" value="" />
+          <Variable name="RUNTIMEURL" value="http://az413943.vo.msecnd.net/php/5.3.17.exe" />
           <Variable name="WORKER" value="true" />
         </Environment>
       </Task>
