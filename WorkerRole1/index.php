@@ -54,34 +54,43 @@ class Worker {
         $existingTables = $this->tableProxy->queryTables('config')->getTables();
         if (count($existingTables) == 0) {
             $this->tableProxy->createTable("config");
-            $entity = new Entity();
-            $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey('timeout');
-            $entity->addProperty("value", EdmType::INT32, 10);
-            $this->tableProxy->insertEntity("config", $entity);
-
-            $entity = new Entity();
-            $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey('count');
-            $entity->addProperty("value", EdmType::INT32, 1);
-            $this->tableProxy->insertEntity("config", $entity);
         }
     }
 
     private function getTimeout()
     {
-        return $this->tableProxy
-                    ->getEntity("config", 'workerConfig', 'timeout')
-                    ->getEntity()
-                    ->getPropertyValue('value');
+        try {
+            $timeout = $this->tableProxy
+                        ->getEntity("config", 'workerConfig', 'timeout')
+                        ->getEntity()
+                        ->getPropertyValue('value');
+        } catch(\Exception $e) {
+            $entity = new Entity();
+            $entity->setPartitionKey("workerConfig");
+            $entity->setRowKey('timeout');
+            $entity->addProperty("value", EdmType::INT32, 10);
+            $this->tableProxy->insertEntity("config", $entity);
+            $timeout = 10;
+        }
+        return $timeout;
     }
 
     private function getCount()
     {
-        return $this->tableProxy
-                    ->getEntity("config", 'workerConfig', 'count')
-                    ->getEntity()
-                    ->getPropertyValue('value');
+        try {
+            $count = $this->tableProxy
+                                ->getEntity("config", 'workerConfig', 'count')
+                                ->getEntity()
+                                ->getPropertyValue('value');
+        } catch (\Exception $e) {
+            $entity = new Entity();
+            $entity->setPartitionKey("workerConfig");
+            $entity->setRowKey('count');
+            $entity->addProperty("value", EdmType::INT32, 1);
+            $this->tableProxy->insertEntity("config", $entity);
+            $count = 1;
+        }
+        return $count;
     }
 
     public function run()

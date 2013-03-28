@@ -53,8 +53,8 @@
 <?php endif; ?>
 <h2>Worker configuration</h2>
 <form method="post" action="/index.php/queues/manage" enctype="multipart/form-data" >
-    Dequeue <input type="text" name="number" id="number"/>
-    messages on <input type="text" name="timeout" id="timeout"/> seconds
+    Dequeue <input type="text" name="number" id="number" value="<?php echo $count; ?>"/>
+    messages on <input type="text" name="timeout" id="timeout" value="<?php echo $timeout; ?>"/> seconds
     <input type="submit" name="configure" value="Set" />
 </form>
 </body>

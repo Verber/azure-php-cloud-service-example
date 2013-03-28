@@ -62,19 +62,44 @@ class Queues {
         $existingTables = $this->tableProxy->queryTables('config')->getTables();
         if (count($existingTables) == 0) {
             $this->tableProxy->createTable("config");
-            $entity = new Entity();
-            $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey('timeout');
-            $entity->addProperty("value", EdmType::INT32, 10);
-            $this->tableProxy->insertEntity("config", $entity);
-
-            $entity = new Entity();
-            $entity->setPartitionKey("workerConfig");
-            $entity->setRowKey('count');
-            $entity->addProperty("value", EdmType::INT32, 1);
-            $this->tableProxy->insertEntity("config", $entity);
         }
     }
+
+    private function getTimeout()
+       {
+           try {
+               $timeout = $this->tableProxy
+                           ->getEntity("config", 'workerConfig', 'timeout')
+                           ->getEntity()
+                           ->getPropertyValue('value');
+           } catch(\Exception $e) {
+               $entity = new Entity();
+               $entity->setPartitionKey("workerConfig");
+               $entity->setRowKey('timeout');
+               $entity->addProperty("value", EdmType::INT32, 10);
+               $this->tableProxy->insertEntity("config", $entity);
+               $timeout = 10;
+           }
+           return $timeout;
+       }
+
+       private function getCount()
+       {
+           try {
+               $count = $this->tableProxy
+                                   ->getEntity("config", 'workerConfig', 'count')
+                                   ->getEntity()
+                                   ->getPropertyValue('value');
+           } catch (\Exception $e) {
+               $entity = new Entity();
+               $entity->setPartitionKey("workerConfig");
+               $entity->setRowKey('count');
+               $entity->addProperty("value", EdmType::INT32, 1);
+               $this->tableProxy->insertEntity("config", $entity);
+               $count = 1;
+           }
+           return $count;
+       }
 
     public function index(Request $request, Application $app)
     {
@@ -84,9 +109,8 @@ class Queues {
 
         $view = new View();
         $view['messages'] = $peekMessageResult->getQueueMessages();
-        $view['timeout'] = $this->tableProxy
-            ->getEntity("config", 'workerConfig', 'timeout')
-            ->getEntity()->getPropertyValue('value');
+        $view['timeout'] = $this->getTimeout();
+        $view['count'] = $this->getCount();
 
         return $view->render('Queues/index.php');
 
