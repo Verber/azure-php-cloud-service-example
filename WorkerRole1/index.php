@@ -105,6 +105,7 @@ class Worker {
 
             $listMessagesResult = $this->queueProxy->listMessages('test-queue', $options);
             $locked_messages = $listMessagesResult->getQueueMessages();
+            sleep($timeout);
             if (count($locked_messages)) {
                 foreach ($locked_messages as $message) {
                     $messageId = $message->getMessageId();
@@ -112,7 +113,6 @@ class Worker {
                     $this->queueProxy->deleteMessage('test-queue', $messageId, $popReceipt);
                 }
             }
-            sleep($timeout);
         }
     }
 }
